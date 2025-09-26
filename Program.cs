@@ -5,8 +5,6 @@ users.Add(new User("kevindiyab", "abc123"));
 
 User? active_user = null;
 
-string input = "";
-
 bool running = true;
 while (running)
 {
@@ -15,9 +13,7 @@ while (running)
         Console.Clear();
         System.Console.WriteLine("Log in (type '1')");
         System.Console.WriteLine("Register (type '2')");
-        input = Console.ReadLine();
-
-        switch (input)
+        switch (Console.ReadLine())
         {
             case "1": // kolla om användaren finns i listan
                 Console.Clear();
@@ -29,6 +25,7 @@ while (running)
                 {
                     if (username == user.Username && password == user.Password)
                     {
+                        Console.Clear();
                         active_user = user;
                         System.Console.WriteLine($"Welcome {username}!");
                         Console.ReadLine();
@@ -39,16 +36,17 @@ while (running)
                 Console.ReadLine();
                 break;
 
-            case "2": // lägg till användaren i listam
+            case "2": // lägg till användaren i listan
                 Console.Clear();
                 System.Console.Write("Username: ");
                 username = Console.ReadLine();
                 System.Console.Write("Password: ");
                 password = Console.ReadLine();
-                users.Add(new User("kevindiyab", "abc123"));
+                users.Add(new User(username, password));
+                Console.Clear();
+                System.Console.WriteLine($"{username} created.");
+                Console.ReadLine();
                 break;
         }
-
     }
-
 }
