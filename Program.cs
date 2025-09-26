@@ -15,7 +15,7 @@ while (running)
         System.Console.WriteLine("Register (type '2')");
         switch (Console.ReadLine())
         {
-            case "1": // kolla om användaren finns i listan
+            case "1": // LOGGA IN
                 Console.Clear();
                 System.Console.Write("Username: ");
                 string username = Console.ReadLine();
@@ -26,27 +26,45 @@ while (running)
                     if (username == user.Username && password == user.Password)
                     {
                         Console.Clear();
-                        active_user = user;
                         System.Console.WriteLine($"Welcome {username}!");
+                        System.Console.WriteLine("Press ENTER to continue");
                         Console.ReadLine();
+                        active_user = user;
                         break;
                     }
                 }
-                System.Console.WriteLine("Incorrect username or password.");
-                Console.ReadLine();
+                if (active_user == null) // OM ANVÄNDAREN INTE FINNS, BÖRJA OM
+                {
+                    System.Console.WriteLine("Incorrect username or password.");
+                    Console.ReadLine();
+                    break;
+                }
                 break;
 
-            case "2": // lägg till användaren i listan
+            case "2": // REGISTRERA
                 Console.Clear();
                 System.Console.Write("Username: ");
-                username = Console.ReadLine();
+                string newUsername = Console.ReadLine();
                 System.Console.Write("Password: ");
-                password = Console.ReadLine();
-                users.Add(new User(username, password));
+                string newPassword = Console.ReadLine();
+                users.Add(new User(newUsername, newPassword));
                 Console.Clear();
-                System.Console.WriteLine($"{username} created.");
+                System.Console.WriteLine($"{newUsername} created.");
                 Console.ReadLine();
                 break;
         }
+    }
+    else
+    {
+        // LOGGA UT
+        System.Console.WriteLine("Press ENTER to continue");
+        System.Console.WriteLine("Type 'logout' to log out");
+        string logout = Console.ReadLine();
+        if (logout.ToLower() == "logout")
+        {
+            active_user = null;
+            break;
+        }
+        break;
     }
 }
