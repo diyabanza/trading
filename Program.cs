@@ -1,9 +1,11 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Globalization;
 using App;
 
 List<User> users = new List<User>();
 users.Add(new User("kevindiyab", "abc123"));
 users.Add(new User("jonas07", "abc123"));
+users.Add(new User("fisk", "3"));
+
 User? active_user = null;
 string active_username = "";
 
@@ -18,8 +20,8 @@ while (running)
     if (active_user == null) // UTLOGGAD
     {
         Console.Clear();
-        System.Console.WriteLine("Log in (1)");
-        System.Console.WriteLine("Register (2)");
+        System.Console.WriteLine("Log in (type '1')");
+        System.Console.WriteLine("Register (type '2')");
         switch (Console.ReadLine())
         {
             case "1": // LOGGA IN
@@ -66,33 +68,51 @@ while (running)
     {
         // MENY
         Console.Clear();
-        System.Console.WriteLine("Upload an item (1)");
-        System.Console.WriteLine("Show list of other users items (2)");
-        System.Console.WriteLine("Type 'logout' to log out");
+        System.Console.WriteLine("Upload an item (type '1')");
+        System.Console.WriteLine("Show list of other users items (type '2')");
+        System.Console.WriteLine("\nLog out (type 'logout')");
         switch (Console.ReadLine())
         {
-            case "1":
+            case "1": // LADDA UPP ITEM
+                Console.Clear();
+                System.Console.Write("Name of item: ");
+                string name = Console.ReadLine();
+                System.Console.Write("Write a description about the item: ");
+                string description = Console.ReadLine();
+                Console.Clear();
+                items.Add(new Item(name, description, active_username));
+                System.Console.WriteLine($"Your item ({name}) was uploaded!");
+                Console.ReadLine();
                 break;
 
-            case "2":
+            case "2": // VISA LISTA
+                Console.Clear();
+                int i = 1;
                 foreach (Item item in items)
                 {
                     if (item.Owner != active_username)
                     {
-                        System.Console.WriteLine($"Item: {item.Name}\nDescription: {item.Description}\nOwner: {item.Owner}\n");
+                        System.Console.WriteLine($"Item: {item.Name}\nOwner: {item.Owner}\n(type '{i}')\n");
+                        ++i;
                     }
                 }
+                System.Console.WriteLine("Type 'goback' to go back");
+                int input;
+                input = Convert.ToInt32(Console.ReadLine());
+                input = input - 1;
+                Console.Clear();
+                System.Console.WriteLine($"Item: {items[input].Name}\n\nDescription: {items[input].Description}\n\nOwner: {items[input].Owner}\n");
+                System.Console.WriteLine("");
                 Console.ReadLine();
                 break;
 
             case "logout":
-                string logout = Console.ReadLine();
-                if (logout.ToLower() == "logout")
-                {
-                    active_user = null;
-                    break;
-                }
+                active_user = null;
+                active_username = "";
                 break;
+
+            default:
+                continue;
         }
     }
 }
