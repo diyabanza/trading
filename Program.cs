@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using App;
+﻿using App;
 
 List<User> users = new List<User>();
 users.Add(new User("kevindiyab", "abc123"));
@@ -20,9 +19,14 @@ while (running)
     if (active_user == null) // UTLOGGAD
     {
         Console.Clear();
+        System.Console.WriteLine("--- Trading System ---\n");
         System.Console.WriteLine("Log in (type '1')");
         System.Console.WriteLine("Register (type '2')");
-        switch (Console.ReadLine())
+        System.Console.WriteLine("Quit (type 'quit')");
+        System.Console.Write("\n--> ");
+
+        string input = Console.ReadLine();
+        switch (input)
         {
             case "1": // LOGGA IN
                 Console.Clear();
@@ -35,9 +39,6 @@ while (running)
                     if (username == user.Username && password == user.Password)
                     {
                         Console.Clear();
-                        System.Console.WriteLine($"Welcome {username}!");
-                        System.Console.WriteLine("Press ENTER to continue");
-                        Console.ReadLine();
                         active_user = user;
                         active_username = username;
                         break;
@@ -45,7 +46,7 @@ while (running)
                 }
                 if (active_user == null) // OM ANVÄNDAREN INTE FINNS, BÖRJA OM
                 {
-                    System.Console.WriteLine("Incorrect username or password.");
+                    System.Console.WriteLine("\nIncorrect username or password.");
                     Console.ReadLine();
                     break;
                 }
@@ -62,15 +63,22 @@ while (running)
                 System.Console.WriteLine($"{username} created.");
                 Console.ReadLine();
                 break;
+
+            case "quit":
+                Console.Clear();
+                running = false;
+                break;
         }
     }
     else // INLOGGAD
     {
         // MENY
         Console.Clear();
+        System.Console.WriteLine($"--- Trading System --- (logged in as {active_username})\n"); 
         System.Console.WriteLine("Upload an item (type '1')");
         System.Console.WriteLine("Show list of other users items (type '2')");
-        System.Console.WriteLine("\nLog out (type 'logout')");
+        System.Console.WriteLine("Log out (type 'logout')");
+        System.Console.Write("\n--> ");
         switch (Console.ReadLine())
         {
             case "1": // LADDA UPP ITEM
@@ -86,24 +94,43 @@ while (running)
                 break;
 
             case "2": // VISA LISTA
-                Console.Clear();
-                int i = 1;
-                foreach (Item item in items)
+                while (true)
                 {
-                    if (item.Owner != active_username)
+                    try
                     {
-                        System.Console.WriteLine($"Item: {item.Name}\nOwner: {item.Owner}\n(type '{i}')\n");
-                        ++i;
+                        Console.Clear();
+                        int i = 1;
+                        foreach (Item item in items)
+                        {
+                            if (item.Owner != active_username)
+                            {
+                                System.Console.WriteLine($"Item: {item.Name}\nOwner: {item.Owner}\n(type '{i}')\n");
+                                ++i;
+                            }
+                        }
+                        System.Console.WriteLine("Type 'goback' to go back");
+                        System.Console.Write("\n--> ");
+                        int input;
+                        input = Convert.ToInt32(Console.ReadLine());
+                        input = input - 1;
+                        if (Convert.ToString(input) == "goback")
+                        {
+                            Console.Clear();
+                            break;
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            System.Console.WriteLine($"Item: {items[input].Name}\n\nDescription: {items[input].Description}\n\nOwner: {items[input].Owner}");
+                            System.Console.WriteLine("");
+                            Console.ReadLine();
+                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
-                System.Console.WriteLine("Type 'goback' to go back");
-                int input;
-                input = Convert.ToInt32(Console.ReadLine());
-                input = input - 1;
-                Console.Clear();
-                System.Console.WriteLine($"Item: {items[input].Name}\n\nDescription: {items[input].Description}\n\nOwner: {items[input].Owner}\n");
-                System.Console.WriteLine("");
-                Console.ReadLine();
                 break;
 
             case "logout":
