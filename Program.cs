@@ -127,6 +127,7 @@ while (running)
                         }
                         System.Console.Write("--> ");
                         int input;
+                        int input2;
                         input = Convert.ToInt32(Console.ReadLine()) - 1;
                         if (input > othersItems.Count())
                         {
@@ -141,11 +142,13 @@ while (running)
                         {
                             case "yes":
                                 Console.Clear();
+                                List<Item> yourItems = new List<Item>();
                                 i = 1;
                                 foreach (Item item in items) // visar alla ens egna items
                                 {
-                                    if (item.Owner == active_username)
+                                    if (active_username == item.Owner)
                                     {
+                                        yourItems.Add(new Item(item.Name, item.Description, item.Owner));
                                         System.Console.WriteLine($"{item.Name}\n(type '{i}')\n");
                                         ++i;
                                     }
@@ -153,29 +156,35 @@ while (running)
                                 System.Console.WriteLine("Type 'goback' to go back\n");
                                 System.Console.WriteLine("Which item of yours would you like to trade?");
                                 System.Console.Write("--> ");
-                                input = Convert.ToInt32(Console.ReadLine());
-                                if (Convert.ToString(input) == "goback")
+                                input2 = Convert.ToInt32(Console.ReadLine()) - 1;
+                                if (Convert.ToString(input2) == "goback")
                                     {
                                         Console.Clear();
                                         break;
                                     }
-                                i = 1;
-                                foreach (Item item in items)
-                                {
-                                    if (item.Owner == active_username)
-                                    {
-                                        ++i;
-                                        if (input == i)
-                                        {
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (input != i)
+                                if (input2 > yourItems.Count() || yourItems.Count() <= 0)
                                 {
                                     continue;
                                 }
-                                System.Console.WriteLine($"You want to give: {items[i].Name}");
+                                Console.Clear();
+                                System.Console.WriteLine($"You give: {yourItems[input2].Name}");
+                                System.Console.WriteLine($"{othersItems[input].Owner} gives: {othersItems[input].Name}");
+                                System.Console.WriteLine("\nConfirm trade request? ('yes'/'no')");
+                                switch (Console.ReadLine())
+                                {
+                                    case "yes":
+                                        Console.Clear();
+                                        trades.Add(new Trade(othersItems[input].Name, active_username, othersItems[input].Owner, "Pending"));
+                                        System.Console.WriteLine($"Trade request was sent to {othersItems[input].Owner}");
+                                        Console.ReadLine();
+                                        break;
+
+                                    case "no":
+                                        break;
+
+                                    default:
+                                        continue;
+                                }
                                 Console.ReadLine();
                                 break;
 
