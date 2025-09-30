@@ -115,7 +115,7 @@ while (running)
                     {
                         Console.Clear();
                         int i = 1;
-                        foreach (Item item in items)
+                        foreach (Item item in items) // skriver ut alla items som inte är ens egna
                         {
                             if (item.Owner != active_username)
                             {
@@ -123,63 +123,70 @@ while (running)
                                 ++i;
                             }
                         }
-                        System.Console.WriteLine("Type 'goback' to go back");
-                        System.Console.Write("\n--> ");
+                        System.Console.Write("--> ");
                         int input;
                         input = Convert.ToInt32(Console.ReadLine());
-                        if (Convert.ToString(input) == "goback")
+                        i = 1;
+
+                        Console.Clear();
+                        foreach (Item item in items)
                         {
-                            Console.Clear();
-                            break;
-                        }
-                        else
-                        {
-                            Console.Clear();
-                            input = input - 1;
-                            System.Console.WriteLine($"Item: {items[input].Name}\n\nDescription: {items[input].Description}\n\nOwner: {items[input].Owner}");
-                            System.Console.WriteLine("\nRequest trade? ('yes'/'no')");
-                            System.Console.Write("--> ");
-                            string requestTrade = Console.ReadLine();
-                            switch (requestTrade.ToLower())
+                            if (item.Owner != active_username)
                             {
-                                case "yes":
-                                    Console.Clear();
-                                    System.Console.WriteLine("Which item of yours would you like to trade?\n");
-                                    i = 1;
-                                    foreach (Item item in items)
-                                    {
-                                        if (item.Owner == active_username)
-                                        {
-                                            System.Console.WriteLine($"{item.Name}\n(type '{i}')\n");
-                                            ++i;
-                                        }
-                                    }
-                                    System.Console.WriteLine("Type 'goback' to go back");
-                                    System.Console.Write("\n--> ");
-                                    input = Convert.ToInt32(Console.ReadLine());
-                                    input = input - 1;
-                                    if (Convert.ToString(input) == "goback")
-                                    {
-                                        Console.Clear();
-                                        break;
-                                    }
+                                if (input == i)
+                                {
                                     break;
-
-                                case "no":
-                                    Console.Clear();
-                                    break;
-
-                                default:
-                                    continue;
+                                }
+                                ++i;
                             }
                         }
+                        if (input != i)
+                        {
+                            continue;
+                        }
+                        System.Console.WriteLine($"Item: {items[i - 1].Name}\n\nDescription: {items[i - 1].Description}\n\nOwner: {items[i - 1].Owner}");
+                        System.Console.WriteLine("\nRequest trade? ('yes'/'no')");
+                        System.Console.Write("--> ");
+                        string requestTrade = Console.ReadLine();
+                        switch (requestTrade.ToLower())
+                        {
+                            case "yes":
+                                Console.Clear();
+                                i = 1;
+                                foreach (Item item in items)
+                                {
+                                    if (item.Owner == active_username)
+                                    {
+                                        System.Console.WriteLine($"{item.Name}\n(type '{i}')\n");
+                                        ++i;
+                                    }
+                                }
+                                System.Console.WriteLine("Type 'goback' to go back\n");
+                                System.Console.WriteLine("Which item of yours would you like to trade?");
+                                System.Console.Write("\n--> ");
+                                input = Convert.ToInt32(Console.ReadLine());
+                                if (Convert.ToString(input) == "goback")
+                                {
+                                    Console.Clear();
+                                    break;
+                                }
+                                input = input - 1;
+                                break;
+
+                            case "no":
+                                Console.Clear();
+                                break;
+
+                            default:
+                                continue;
+                        }
+                        
                     }
                     catch
                     {
                         continue;
                     }
                 }
-                break;
 
             case "3":
                 Console.Clear();
