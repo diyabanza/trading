@@ -113,6 +113,7 @@ while (running)
                 {
                     try
                     {
+                        List<Item> othersItems = new List<Item>();
                         Console.Clear();
                         int i = 1;
                         foreach (Item item in items) // skriver ut alla items som inte är ens egna
@@ -120,32 +121,20 @@ while (running)
                             if (item.Owner != active_username)
                             {
                                 System.Console.WriteLine($"Item: {item.Name}\nOwner: {item.Owner}\n(type '{i}')\n");
+                                othersItems.Add(new Item(item.Name, item.Description, item.Owner));
                                 ++i;
                             }
                         }
                         System.Console.Write("--> ");
                         int input;
-                        input = Convert.ToInt32(Console.ReadLine());
-                        i = 1;
-
-                        Console.Clear();
-                        foreach (Item item in items)
-                        {
-                            if (item.Owner != active_username)
-                            {
-                                if (input == i)
-                                {
-                                    break;
-                                }
-                                ++i;
-                            }
-                        }
-                        if (input != i)
+                        input = Convert.ToInt32(Console.ReadLine()) - 1;
+                        if (input > othersItems.Count())
                         {
                             continue;
                         }
-                        System.Console.WriteLine($"Item: {items[i - 1].Name}\n\nDescription: {items[i - 1].Description}\n\nOwner: {items[i - 1].Owner}");
-                        System.Console.WriteLine("\nRequest trade? ('yes'/'no')");
+                        Console.Clear();
+                        System.Console.WriteLine($"Item: {othersItems[input].Name}\n\nDescription: {othersItems[input].Description}\n\nOwner: {othersItems[input].Owner}");
+                        System.Console.WriteLine("\n -- -- -- -- -- -- \n\nRequest trade? ('yes'/'no')");
                         System.Console.Write("--> ");
                         string requestTrade = Console.ReadLine();
                         switch (requestTrade.ToLower())
@@ -153,7 +142,7 @@ while (running)
                             case "yes":
                                 Console.Clear();
                                 i = 1;
-                                foreach (Item item in items)
+                                foreach (Item item in items) // visar alla ens egna items
                                 {
                                     if (item.Owner == active_username)
                                     {
@@ -163,14 +152,31 @@ while (running)
                                 }
                                 System.Console.WriteLine("Type 'goback' to go back\n");
                                 System.Console.WriteLine("Which item of yours would you like to trade?");
-                                System.Console.Write("\n--> ");
+                                System.Console.Write("--> ");
                                 input = Convert.ToInt32(Console.ReadLine());
                                 if (Convert.ToString(input) == "goback")
+                                    {
+                                        Console.Clear();
+                                        break;
+                                    }
+                                i = 1;
+                                foreach (Item item in items)
                                 {
-                                    Console.Clear();
-                                    break;
+                                    if (item.Owner == active_username)
+                                    {
+                                        ++i;
+                                        if (input == i)
+                                        {
+                                            break;
+                                        }
+                                    }
                                 }
-                                input = input - 1;
+                                if (input != i)
+                                {
+                                    continue;
+                                }
+                                System.Console.WriteLine($"You want to give: {items[i].Name}");
+                                Console.ReadLine();
                                 break;
 
                             case "no":
