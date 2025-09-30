@@ -91,7 +91,7 @@ while (running)
         System.Console.WriteLine($"--- Trading System --- (logged in as {active_username})\n"); 
         System.Console.WriteLine("Upload an item (type '1')");
         System.Console.WriteLine("View list of other users items (type '2')");
-        System.Console.WriteLine("Browse received trade requests (type '3')");
+        System.Console.WriteLine("Browse trade requests (type '3')"); // pending, denied, approved
         System.Console.WriteLine("Log out (type 'logout')");
         System.Console.Write("\n--> ");
         switch (Console.ReadLine())
@@ -127,7 +127,6 @@ while (running)
                         System.Console.Write("\n--> ");
                         int input;
                         input = Convert.ToInt32(Console.ReadLine());
-                        input = input - 1;
                         if (Convert.ToString(input) == "goback")
                         {
                             Console.Clear();
@@ -136,9 +135,43 @@ while (running)
                         else
                         {
                             Console.Clear();
+                            input = input - 1;
                             System.Console.WriteLine($"Item: {items[input].Name}\n\nDescription: {items[input].Description}\n\nOwner: {items[input].Owner}");
                             System.Console.WriteLine("\nRequest trade? ('yes'/'no')");
-                            Console.ReadLine();
+                            System.Console.Write("--> ");
+                            string requestTrade = Console.ReadLine();
+                            switch (requestTrade.ToLower())
+                            {
+                                case "yes":
+                                    Console.Clear();
+                                    System.Console.WriteLine("Which item of yours would you like to trade?\n");
+                                    i = 1;
+                                    foreach (Item item in items)
+                                    {
+                                        if (item.Owner == active_username)
+                                        {
+                                            System.Console.WriteLine($"{item.Name}\n(type '{i}')\n");
+                                            ++i;
+                                        }
+                                    }
+                                    System.Console.WriteLine("Type 'goback' to go back");
+                                    System.Console.Write("\n--> ");
+                                    input = Convert.ToInt32(Console.ReadLine());
+                                    input = input - 1;
+                                    if (Convert.ToString(input) == "goback")
+                                    {
+                                        Console.Clear();
+                                        break;
+                                    }
+                                    break;
+
+                                case "no":
+                                    Console.Clear();
+                                    break;
+
+                                default:
+                                    continue;
+                            }
                         }
                     }
                     catch
