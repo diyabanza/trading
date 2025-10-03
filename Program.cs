@@ -26,7 +26,7 @@ items.Add(new Item("Pack of cards", "Contains 43 cards and the package is broken
 items.Add(new Item("Red T-Shirt", "Medium Size", users[1].Username));
 
 List<Trade> trades = new List<Trade>();
-trades.Add(new Trade(items[0].Name, users[1].Username, users[0].Username, Tradestatus.Pending));
+trades.Add(new Trade(items[2].Name, items[0].Name, users[1].Username, users[0].Username, Tradestatus.Pending));
 
 bool running = true;
 while (running)
@@ -92,7 +92,7 @@ while (running)
         System.Console.WriteLine($"--- Trading System --- (logged in as {active_username})\n"); 
         System.Console.WriteLine("Upload an item (type '1')");
         System.Console.WriteLine("View list of other users items (type '2')");
-        System.Console.WriteLine("Browse trade requests (type '3')"); // pending, denied, approved
+        System.Console.WriteLine("Browse trade requests (type '3')");
         System.Console.WriteLine("Log out (type 'logout')");
         System.Console.Write("\n--> ");
         switch (Console.ReadLine())
@@ -184,7 +184,7 @@ while (running)
                                 {
                                     case "yes":
                                         Console.Clear();
-                                        trades.Add(new Trade(othersItems[input].Name, active_username, othersItems[input].Owner, Tradestatus.Pending));
+                                        trades.Add(new Trade(yourItems[input2].Name, othersItems[input].Name, active_username, othersItems[input].Owner, Tradestatus.Pending));
                                         System.Console.WriteLine($"Trade request was sent to {othersItems[input].Owner}");
                                         Console.ReadLine();
                                         break;
@@ -206,7 +206,7 @@ while (running)
                             default:
                                 continue;
                         }
-                        
+
                     }
                     catch
                     {
@@ -216,18 +216,44 @@ while (running)
 
             case "3":
                 Console.Clear();
-                foreach (Trade trade in trades)
+                System.Console.WriteLine("Received trade requests [Pending] (type '1')");
+                System.Console.WriteLine("Sent trade requests [Pending] (type '2')");
+                System.Console.WriteLine("Approved trade requests (type '3')");
+                System.Console.WriteLine("Denied trade requests (type '4')\n");
+                System.Console.Write("--> ");
+                switch (Console.ReadLine())
                 {
-                    if (trade.Receiver == active_username)
-                    {
-                        System.Console.WriteLine($"Item: {trade.Items}\nSender: {trade.Sender}\n");
-                    }
+                    case "1":
+                        Console.Clear();
+                        List<Trade> receivedTrades = new List<Trade>();
+                        int i = 1;
+                        foreach (Trade trade in trades)
+                        {
+                            if (trade.Receiver == active_username)
+                            {
+                                System.Console.WriteLine($"{trade.Sender} wants to trade your item ({trade.ReceiverItems}) for theirs ({trade.SenderItems})(type '{i}')\n");
+                                receivedTrades.Add(new Trade(trade.SenderItems, trade.ReceiverItems, trade.Sender, trade.Receiver, Tradestatus.Pending));
+                                ++i;
+                            }
+                        }
+                        if (trades.Count() <= 0)
+                        {
+                            System.Console.WriteLine("You don't have any received trade requests");
+                            break;
+                        }
+                        i = 1;
+                        string input = Console.ReadLine();
+                        foreach (Trade trade in receivedTrades)
+                        {
+                            if (input == Convert.ToString(i))
+                            {
+
+                            }
+                            ++i;
+                        }
+
+                        break;
                 }
-                if (trades.Count() <= 0)
-                {
-                    System.Console.WriteLine("You don't have any received trade requests");
-                }
-                Console.ReadLine();
                 break;
 
             case "logout":
