@@ -12,10 +12,10 @@
 using App;
 
 List<User> users = new List<User>();
-users.Add(new User("kd", "abc"));
-users.Add(new User("jonas", "abc"));
-users.Add(new User("fisk", "abc"));
-users.Add(new User("bo", "abc"));
+users.Add(new User("kd", "asd"));
+users.Add(new User("jonas", "asd"));
+users.Add(new User("fisk", "asd"));
+users.Add(new User("bo", "asd"));
 
 User? active_user = null;
 string active_username = "";
@@ -106,7 +106,8 @@ while (running)
                 while (true)
                 {
                     Console.Clear();
-                    System.Console.WriteLine($"Upload {name}? ('yes'/'no')\n\n--> ");
+                    System.Console.WriteLine($"Upload {name}? ('yes'/'no')\n ");
+                    System.Console.Write("--> ");
                     string upload = Console.ReadLine();
                     if (upload.ToLower() == "yes")
                     {
@@ -144,10 +145,18 @@ while (running)
                                 ++i;
                             }
                         }
+                        System.Console.WriteLine("Type 'goback' to go back\n");
                         System.Console.Write("--> ");
+                        string backinput = Console.ReadLine();
+                        if (backinput == "goback")
+                        {
+                            Console.Clear();
+                            break;
+                        }
                         int input;
                         int input2;
-                        input = Convert.ToInt32(Console.ReadLine()) - 1;
+                        int.TryParse(backinput, out input);
+                        input = input - 1;
                         if (input > othersItems.Count())
                         {
                             continue;
@@ -214,7 +223,6 @@ while (running)
                                     default:
                                         continue;
                                 }
-                                Console.ReadLine();
                                 break;
 
                             case "no":
@@ -231,6 +239,7 @@ while (running)
                         continue;
                     }
                 }
+                break;
 
             case "3":
                 Console.Clear();
@@ -254,9 +263,10 @@ while (running)
                                 ++i;
                             }
                         }
-                        if (trades.Count() <= 0)
+                        if (receivedTrades.Count() <= 0)
                         {
-                            System.Console.WriteLine("You don't have any received trade requests");
+                            System.Console.WriteLine("You haven't received any trade requests");
+                            Console.ReadLine();
                             break;
                         }
                         i = 1;
@@ -273,7 +283,6 @@ while (running)
                             }
                             ++i;
                         }
-
                         break;
                 }
                 break;
