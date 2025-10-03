@@ -89,7 +89,7 @@ while (running)
     {
         // MENY
         Console.Clear();
-        System.Console.WriteLine($"--- Trading System --- (logged in as {active_username})\n"); 
+        System.Console.WriteLine($"--- Trading System --- (logged in as {active_username})\n");
         System.Console.WriteLine("Upload an item (type '1')");
         System.Console.WriteLine("View list of other users items (type '2')");
         System.Console.WriteLine("Browse trade requests (type '3')");
@@ -103,10 +103,28 @@ while (running)
                 string name = Console.ReadLine();
                 System.Console.Write("Write a description about the item: ");
                 string description = Console.ReadLine();
-                Console.Clear();
-                items.Add(new Item(name, description, active_username));
-                System.Console.WriteLine($"Your item ({name}) was uploaded!");
-                Console.ReadLine();
+                while (true)
+                {
+                    Console.Clear();
+                    System.Console.WriteLine($"Upload {name}? ('yes'/'no')\n\n--> ");
+                    string upload = Console.ReadLine();
+                    if (upload.ToLower() == "yes")
+                    {
+                        items.Add(new Item(name, description, active_username));
+                        System.Console.WriteLine($"Your item ({name}) was uploaded!");
+                        Console.ReadLine();
+                        break;
+                    }
+                    if (upload.ToLower() == "no")
+                    {
+                        Console.Clear();
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
                 break;
 
             case "2": // VISA ANDRAS ITEMS
@@ -247,7 +265,11 @@ while (running)
                         {
                             if (input == Convert.ToString(i))
                             {
-
+                                Console.Clear();
+                                System.Console.WriteLine("Accept (type '1')");
+                                System.Console.WriteLine("Deny (type '2')");
+                                System.Console.WriteLine("Go back (type 'goback')");
+                                Console.ReadLine();
                             }
                             ++i;
                         }
