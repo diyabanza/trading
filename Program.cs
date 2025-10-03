@@ -3,18 +3,19 @@
 // A user needs to be able to log in +
 // A user needs to be able to upload information about the item they wish to trade +
 // A user needs to be able to browse a list of other users items +
-// A user needs to be able to request a trade for other users items 
-// A user needs to be able to browse trade requests.
-// A user needs to be able to accept a trade request.
-// A user needs to be able to deny a trade request.
-// A user needs to be able to browse completed requests.
+// A user needs to be able to request a trade for other users items +
+// A user needs to be able to browse trade requests 
+// A user needs to be able to accept a trade request
+// A user needs to be able to deny a trade request
+// A user needs to be able to browse completed requests
 
 using App;
 
 List<User> users = new List<User>();
-users.Add(new User("kevindiyab", "abc123"));
-users.Add(new User("jonas07", "abc123"));
-users.Add(new User("fisk", "3"));
+users.Add(new User("kd", "abc"));
+users.Add(new User("jonas", "abc"));
+users.Add(new User("fisk", "abc"));
+users.Add(new User("bo", "abc"));
 
 User? active_user = null;
 string active_username = "";
@@ -25,7 +26,7 @@ items.Add(new Item("Pack of cards", "Contains 43 cards and the package is broken
 items.Add(new Item("Red T-Shirt", "Medium Size", users[1].Username));
 
 List<Trade> trades = new List<Trade>();
-trades.Add(new Trade(items[0].Name, users[1].Username, users[0].Username, "Pending"));
+trades.Add(new Trade(items[0].Name, users[1].Username, users[0].Username, Tradestatus.Pending));
 
 bool running = true;
 while (running)
@@ -116,7 +117,7 @@ while (running)
                         List<Item> othersItems = new List<Item>();
                         Console.Clear();
                         int i = 1;
-                        foreach (Item item in items) // skriver ut alla items som inte är ens egna
+                        foreach (Item item in items) // skriver ut alla items som inte är ens egna & lägger till dem i en separat lista
                         {
                             if (item.Owner != active_username)
                             {
@@ -133,7 +134,7 @@ while (running)
                         {
                             continue;
                         }
-                        Console.Clear();
+                        Console.Clear(); // visar mer info om det item man vill se (nedan)
                         System.Console.WriteLine($"Item: {othersItems[input].Name}\n\nDescription: {othersItems[input].Description}\n\nOwner: {othersItems[input].Owner}");
                         System.Console.WriteLine("\n -- -- -- -- -- -- \n\nRequest trade? ('yes'/'no')");
                         System.Console.Write("--> ");
@@ -141,28 +142,37 @@ while (running)
                         switch (requestTrade.ToLower())
                         {
                             case "yes":
-                                Console.Clear();
                                 List<Item> yourItems = new List<Item>();
-                                i = 1;
-                                foreach (Item item in items) // visar alla ens egna items
+                                foreach (Item item in items) // lägger till ens egna items i en separat lista
                                 {
                                     if (active_username == item.Owner)
                                     {
                                         yourItems.Add(new Item(item.Name, item.Description, item.Owner));
-                                        System.Console.WriteLine($"{item.Name}\n(type '{i}')\n");
-                                        ++i;
                                     }
+                                }
+                                if (yourItems.Count() <= 0)
+                                {
+                                    System.Console.WriteLine("\nYou don't have any items to trade with...");
+                                    Console.ReadLine();
+                                    break;
+                                }
+                                Console.Clear();
+                                i = 1;
+                                foreach (Item item in yourItems) // visar alla ens egna items
+                                {
+                                    System.Console.WriteLine($"{item.Name}\n(type '{i}')\n");
+                                    ++i;
                                 }
                                 System.Console.WriteLine("Type 'goback' to go back\n");
                                 System.Console.WriteLine("Which item of yours would you like to trade?");
                                 System.Console.Write("--> ");
                                 input2 = Convert.ToInt32(Console.ReadLine()) - 1;
                                 if (Convert.ToString(input2) == "goback")
-                                    {
-                                        Console.Clear();
-                                        break;
-                                    }
-                                if (input2 > yourItems.Count() || yourItems.Count() <= 0)
+                                {
+                                    Console.Clear();
+                                    break;
+                                }
+                                if (input2 > yourItems.Count())
                                 {
                                     continue;
                                 }
@@ -174,12 +184,13 @@ while (running)
                                 {
                                     case "yes":
                                         Console.Clear();
-                                        trades.Add(new Trade(othersItems[input].Name, active_username, othersItems[input].Owner, "Pending"));
+                                        trades.Add(new Trade(othersItems[input].Name, active_username, othersItems[input].Owner, Tradestatus.Pending));
                                         System.Console.WriteLine($"Trade request was sent to {othersItems[input].Owner}");
                                         Console.ReadLine();
                                         break;
 
                                     case "no":
+                                        Console.Clear();
                                         break;
 
                                     default:
@@ -209,8 +220,12 @@ while (running)
                 {
                     if (trade.Receiver == active_username)
                     {
-                        System.Console.WriteLine($"Item: {trade.Items}\n, Sender: {trade.Sender}\n");
+                        System.Console.WriteLine($"Item: {trade.Items}\nSender: {trade.Sender}\n");
                     }
+                }
+                if (trades.Count() <= 0)
+                {
+                    System.Console.WriteLine("You don't have any received trade requests");
                 }
                 Console.ReadLine();
                 break;

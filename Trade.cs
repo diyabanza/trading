@@ -5,9 +5,9 @@ class Trade
     public string Items;
     public string Sender;
     public string Receiver;
-    public string Status;
+    public Tradestatus Status;
 
-    public Trade(string items, string sender, string receiver, string status)
+    public Trade(string items, string sender, string receiver, Tradestatus status)
     {
         Items = items;
         Sender = sender;
