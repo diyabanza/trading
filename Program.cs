@@ -1,15 +1,4 @@
-﻿// A user needs to be able to register an account +
-// A user needs to be able to log out +
-// A user needs to be able to log in +
-// A user needs to be able to upload information about the item they wish to trade +
-// A user needs to be able to browse a list of other users items +
-// A user needs to be able to request a trade for other users items +
-// A user needs to be able to browse trade requests 
-// A user needs to be able to accept a trade request
-// A user needs to be able to deny a trade request
-// A user needs to be able to browse completed requests
-
-using App;
+﻿using App;
 
 List<User> users = new List<User>();
 users.Add(new User("kd", "asd"));
@@ -277,7 +266,7 @@ while (running)
                             if (input == i)
                             {
                                 Console.Clear();
-                                System.Console.WriteLine($"Trade your item ({trade.ReceiverItems}) for {trade.Sender}'s item ({trade.ReceiverItems})?");
+                                System.Console.WriteLine($"Trade your item ({trade.ReceiverItems}) for {trade.Sender}'s item ({trade.SenderItems})?\n");
                                 System.Console.WriteLine("Accept (type '1')");
                                 System.Console.WriteLine("Deny (type '2')");
                                 System.Console.WriteLine("Go back (type 'goback')");
@@ -295,15 +284,48 @@ while (running)
                                             {
                                                 item.Owner = active_username;
                                             }
+                                            // gör traden till approved
+                                        }
+                                        foreach (Trade t in trades)
+                                        {
+                                            if (t.Receiver == active_username && t.Sender == receivedTrades[i].Sender && t.ReceiverItems == receivedTrades[i].ReceiverItems && t.SenderItems == receivedTrades[i].SenderItems)
+                                            {
+                                                t.Status = Tradestatus.Approved;
+                                            }
                                         }
                                         Console.Clear();
                                         System.Console.WriteLine("Trade completed!");
+                                        Console.ReadLine();
+                                        break;
+
+                                    case "2":
+                                        Console.Clear();
+                                        System.Console.WriteLine("Trade denied!");
+                                        foreach (Trade t in trades)
+                                        {
+                                            if (t.Receiver == active_username && t.Sender == receivedTrades[i].Sender && t.ReceiverItems == receivedTrades[i].ReceiverItems && t.SenderItems == receivedTrades[i].SenderItems)
+                                            {
+                                                t.Status = Tradestatus.Denied;
+                                            }
+                                        }
                                         Console.ReadLine();
                                         break;
                                 }
                             }
                             ++i;
                         }
+                        break;
+
+                    case "2":
+                        Console.Clear();
+                        foreach (Trade trade in trades)
+                        {
+                            if (trade.Sender == active_username && trade.Status == Tradestatus.Pending)
+                            {
+                                System.Console.WriteLine($"You want to trade your item ({trade.SenderItems}) for {trade.Receiver}'s item ({trade.ReceiverItems}).\n");
+                            }
+                        }
+                        Console.ReadLine();
                         break;
                 }
                 break;
