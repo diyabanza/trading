@@ -184,6 +184,7 @@ while (running)
                                     break;
                                 }
                                 Console.Clear();
+                                System.Console.WriteLine("Which item of yours would you like to trade?");
                                 i = 1;
                                 foreach (Item item in yourItems) // visar alla ens egna items
                                 {
@@ -191,7 +192,6 @@ while (running)
                                     ++i;
                                 }
                                 System.Console.WriteLine("Type 'goback' to go back\n");
-                                System.Console.WriteLine("Which item of yours would you like to trade?");
                                 System.Console.Write("--> ");
                                 input2 = Convert.ToInt32(Console.ReadLine()) - 1;
                                 if (Convert.ToString(input2) == "goback")
@@ -256,9 +256,9 @@ while (running)
                         int i = 1;
                         foreach (Trade trade in trades)
                         {
-                            if (trade.Receiver == active_username)
+                            if (trade.Receiver == active_username && trade.Status == Tradestatus.Pending)
                             {
-                                System.Console.WriteLine($"{trade.Sender} wants to trade your item ({trade.ReceiverItems}) for theirs ({trade.SenderItems})(type '{i}')\n");
+                                System.Console.WriteLine($"{trade.Sender} wants to trade your item ({trade.ReceiverItems}) for theirs ({trade.SenderItems}) (type '{i}')\n");
                                 receivedTrades.Add(new Trade(trade.SenderItems, trade.ReceiverItems, trade.Sender, trade.Receiver, Tradestatus.Pending));
                                 ++i;
                             }
@@ -269,17 +269,38 @@ while (running)
                             Console.ReadLine();
                             break;
                         }
-                        i = 1;
-                        string input = Console.ReadLine();
+                        i = 0;
+                        System.Console.Write("--> ");
+                        int input = Convert.ToInt32(Console.ReadLine()) - 1;
                         foreach (Trade trade in receivedTrades)
                         {
-                            if (input == Convert.ToString(i))
+                            if (input == i)
                             {
                                 Console.Clear();
+                                System.Console.WriteLine($"Trade your item ({trade.ReceiverItems}) for {trade.Sender}'s item ({trade.ReceiverItems})?");
                                 System.Console.WriteLine("Accept (type '1')");
                                 System.Console.WriteLine("Deny (type '2')");
                                 System.Console.WriteLine("Go back (type 'goback')");
-                                Console.ReadLine();
+                                System.Console.Write("\n--> ");
+                                switch (Console.ReadLine())
+                                {
+                                    case "1":
+                                        foreach (Item item in items)
+                                        {
+                                            if (item.Name == receivedTrades[i].ReceiverItems && item.Owner == active_username)
+                                            {
+                                                item.Owner = receivedTrades[i].Sender;
+                                            }
+                                            if (item.Name == receivedTrades[i].SenderItems && item.Owner == receivedTrades[i].Sender)
+                                            {
+                                                item.Owner = active_username;
+                                            }
+                                        }
+                                        Console.Clear();
+                                        System.Console.WriteLine("Trade completed!");
+                                        Console.ReadLine();
+                                        break;
+                                }
                             }
                             ++i;
                         }
