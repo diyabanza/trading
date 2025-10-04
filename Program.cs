@@ -345,6 +345,19 @@ while (running)
                         break;
 
                     case "4":
+                        Console.Clear();
+                        foreach (Trade trade in trades)
+                        {
+                            if (trade.Receiver == active_username && trade.Status == Tradestatus.Denied)
+                            {
+                                System.Console.WriteLine($"You didn't trade your item ({trade.ReceiverItems}) for {trade.Sender}'s item ({trade.SenderItems})");
+                            }
+                            if (trade.Sender == active_username && trade.Status == Tradestatus.Denied)
+                            {
+                                System.Console.WriteLine($"You didn't trade your item ({trade.SenderItems}) for {trade.Receiver}'s item ({trade.ReceiverItems})");
+                            }
+                        }
+                        Console.ReadLine();
                         break;
                 }
                 break;
