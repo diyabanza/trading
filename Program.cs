@@ -230,7 +230,7 @@ while (running)
                 }
                 break;
 
-            case "3":
+            case "3": // VISA TRADE REQUESTS
                 Console.Clear();
                 System.Console.WriteLine("Received trade requests [Pending] (type '1')");
                 System.Console.WriteLine("Sent trade requests [Pending] (type '2')");
@@ -260,7 +260,7 @@ while (running)
                         }
                         i = 0;
                         System.Console.Write("--> ");
-                        int input = Convert.ToInt32(Console.ReadLine()) - 1;
+                        int input = Convert.ToInt32(Console.ReadLine()) - 1; // null bug
                         foreach (Trade trade in receivedTrades)
                         {
                             if (input == i)
@@ -326,6 +326,25 @@ while (running)
                             }
                         }
                         Console.ReadLine();
+                        break;
+
+                    case "3":
+                        Console.Clear();
+                        foreach (Trade trade in trades)
+                        {
+                            if (trade.Receiver == active_username && trade.Status == Tradestatus.Approved)
+                            {
+                                System.Console.WriteLine($"You traded your item ({trade.ReceiverItems}) for {trade.Sender}'s item ({trade.SenderItems})");
+                            }
+                            if (trade.Sender == active_username && trade.Status == Tradestatus.Approved)
+                            {
+                                System.Console.WriteLine($"You traded your item ({trade.SenderItems}) for {trade.Receiver}'s item ({trade.ReceiverItems})");
+                            }
+                        }
+                        Console.ReadLine();
+                        break;
+
+                    case "4":
                         break;
                 }
                 break;
