@@ -255,43 +255,43 @@ while (running)
                     case "1":
                         while (true)
                         {
-                            try
+                            try // undviker errors
                             {
                                 Console.Clear();
-                                List<Trade> receivedTrades = new List<Trade>();
+                                List<Trade> receivedTrades = new List<Trade>(); // tom lista som senare kommer innehålla trades man har fått
                                 int i = 1;
-                                foreach (Trade trade in trades)
+                                foreach (Trade trade in trades) // går igenom varje trade i vanliga trades-listan
                                 {
-                                    if (trade.Receiver == active_username && trade.Status == Tradestatus.Pending)
+                                    if (trade.Receiver == active_username && trade.Status == Tradestatus.Pending) // om det är den inloggade användaren som har fått traden & om den är pending
                                     {
                                         System.Console.WriteLine($"{trade.Sender} wants to trade your item ({trade.ReceiverItems}) for theirs ({trade.SenderItems}) (type '{i}')\n");
-                                        receivedTrades.Add(new Trade(trade.SenderItems, trade.ReceiverItems, trade.Sender, trade.Receiver, Tradestatus.Pending));
-                                        ++i;
+                                        receivedTrades.Add(new Trade(trade.SenderItems, trade.ReceiverItems, trade.Sender, trade.Receiver, Tradestatus.Pending)); // lägg till traden i nya listan
+                                        ++i; // +1 så alla trades blir numrerade
                                     }
                                 }
-                                if (receivedTrades.Count() <= 0)
+                                if (receivedTrades.Count() <= 0) // om användaren inte har några trades
                                 {
                                     System.Console.WriteLine("You haven't received any trade requests");
                                     Console.ReadLine();
-                                    break;
+                                    break; // bryt ut från loopen
                                 }
                                 i = 0;
                                 System.Console.Write("--> ");
-                                int input = Convert.ToInt32(Console.ReadLine()) - 1;
-                                foreach (Trade trade in receivedTrades)
+                                int input = Convert.ToInt32(Console.ReadLine()) - 1; // -1 för att matcha med listor
+                                foreach (Trade trade in receivedTrades) 
                                 {
-                                    if (input == i)
+                                    if (input == i) // går in på det trade-numret som användaren har skrivit
                                     {
                                         Console.Clear();
                                         System.Console.WriteLine($"Trade your item ({trade.ReceiverItems}) for {trade.Sender}'s item ({trade.SenderItems})?\n");
                                         System.Console.WriteLine("Accept (type '1')");
-                                        System.Console.WriteLine("Deny (type '2')");
+                                        System.Console.WriteLine("Decline (type '2')");
                                         System.Console.WriteLine("Go back (type 'goback')");
                                         System.Console.Write("\n--> ");
                                         switch (Console.ReadLine())
                                         {
-                                            case "1":
-                                                foreach (Item item in items)
+                                            case "1": // om man vill acceptera traden
+                                                foreach (Item item in items) // går igenom varje item och (nedan) byter så att sendern och receivern får varandras item
                                                 {
                                                     if (item.Name == receivedTrades[i].ReceiverItems && item.Owner == active_username)
                                                     {
@@ -301,13 +301,12 @@ while (running)
                                                     {
                                                         item.Owner = active_username;
                                                     }
-                                                    // gör traden till approved
                                                 }
-                                                foreach (Trade t in trades)
+                                                foreach (Trade t in trades) // går igenom alla trades och ser så att den trade som användaren har valt blir approved
                                                 {
                                                     if (t.Receiver == active_username && t.Sender == receivedTrades[i].Sender && t.ReceiverItems == receivedTrades[i].ReceiverItems && t.SenderItems == receivedTrades[i].SenderItems)
                                                     {
-                                                        t.Status = Tradestatus.Approved;
+                                                        t.Status = Tradestatus.Approved; // gör traden till approved
                                                     }
                                                 }
                                                 DataStorage.SaveItems(items);
@@ -316,11 +315,11 @@ while (running)
                                                 System.Console.WriteLine("Trade completed!");
                                                 Console.ReadLine();
                                                 break;
-
-                                            case "2":
+ 
+                                            case "2": // om man inte vill accepta
                                                 Console.Clear();
                                                 System.Console.WriteLine("Trade denied!");
-                                                foreach (Trade t in trades)
+                                                foreach (Trade t in trades) // ser till så att rätt trade i listan blir denied (nedan)
                                                 {
                                                     if (t.Receiver == active_username && t.Sender == receivedTrades[i].Sender && t.ReceiverItems == receivedTrades[i].ReceiverItems && t.SenderItems == receivedTrades[i].SenderItems)
                                                     {
@@ -335,16 +334,16 @@ while (running)
                                     ++i;
                                 }
                             }
-                            catch
+                            catch // om något error sker
                             {
-                                continue;
+                                continue; // börja om koden
                             }
                         }
                         break;
 
                     case "2": // visar trades man har skickat till andra som är pending
                         Console.Clear();
-                        foreach (Trade trade in trades)
+                        foreach (Trade trade in trades) // (nedan) om traden är pending och är skickad från den inloggade användaren så visas den
                         {
                             if (trade.Sender == active_username && trade.Status == Tradestatus.Pending)
                             {
@@ -356,7 +355,7 @@ while (running)
 
                     case "3": // visar approved trades
                         Console.Clear();
-                        foreach (Trade trade in trades)
+                        foreach (Trade trade in trades) // om en av sina trades har blivit approved, oavsett vem som skickade den, så visas den (nedan)
                         {
                             if (trade.Receiver == active_username && trade.Status == Tradestatus.Approved)
                             {
@@ -372,7 +371,7 @@ while (running)
 
                     case "4": // visar denied trades
                         Console.Clear();
-                        foreach (Trade trade in trades)
+                        foreach (Trade trade in trades) // samma här fast med trades som bled denied
                         {
                             if (trade.Receiver == active_username && trade.Status == Tradestatus.Denied)
                             {
@@ -388,12 +387,12 @@ while (running)
                 }
                 break;
 
-            case "logout":
-                active_username = "";
+            case "logout": // om man skriver "logout"
+                active_username = ""; // så blir användar-namnet blankt och går därför tillbaks till log-in sidan
                 break;
 
-            default:
-                continue;
+            default: // om man skriver något annat
+                continue; // börja om
         }
     }
 }
