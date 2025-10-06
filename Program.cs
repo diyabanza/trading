@@ -2,19 +2,31 @@
 
 string active_username = ""; // variabel för namnet på användaren som är inloggad
 
-List<User> users = new List<User>(); // lista med alla användare
-users.Add(new User("kd", "asd"));
-users.Add(new User("jonas", "asd"));
-users.Add(new User("fisk", "asd"));
-users.Add(new User("bo", "asd"));
+List<User> users = DataStorage.LoadUsers(); // lista med alla användare
+if (users.Count == 0)
+{
+    users.Add(new User("kd", "asd"));
+    users.Add(new User("jonas", "asd"));
+    users.Add(new User("fisk", "asd"));
+    users.Add(new User("bo", "asd"));
+    DataStorage.SaveUsers(users);
+}
 
-List<Item> items = new List<Item>(); // lista med alla items
-items.Add(new Item("7up Zero", "A warm 7up that expired around three years ago.", users[0].Username));
-items.Add(new Item("Pack of cards", "Contains 43 cards and the package is broken. Would like to trade it for a new deck if possible.", users[0].Username));
-items.Add(new Item("Red T-Shirt", "Medium Size", users[1].Username));
+List<Item> items = DataStorage.LoadItems(); // lista med alla items
+if (items.Count == 0)
+{
+    items.Add(new Item("7up Zero", "A warm 7up that expired around three years ago.", users[0].Username));
+    items.Add(new Item("Pack of cards", "Contains 43 cards and the package is broken. Would like to trade it for a new deck if possible.", users[0].Username));
+    items.Add(new Item("Red T-Shirt", "Medium Size", users[1].Username));
+    DataStorage.SaveItems(items);
+}
 
-List<Trade> trades = new List<Trade>(); // lista med alla trades oavsett status
-trades.Add(new Trade(items[2].Name, items[0].Name, users[1].Username, users[0].Username, Tradestatus.Pending));
+List<Trade> trades = DataStorage.LoadTrades(); // lista med alla trades oavsett status
+if (trades.Count == 0)
+{
+    trades.Add(new Trade(items[2].Name, items[0].Name, users[1].Username, users[0].Username, Tradestatus.Pending));
+    DataStorage.SaveTrades(trades);
+}
 
 bool running = true;
 while (running)
@@ -61,6 +73,7 @@ while (running)
                 System.Console.Write("Password: ");
                 password = Console.ReadLine(); // -||-
                 users.Add(new User(username, password)); // lägger till dom sparade stringsen i user-listan så man senare kan logga in genom det kontot
+                DataStorage.SaveUsers(users);
                 Console.Clear();
                 System.Console.WriteLine($"{username} created.");
                 Console.ReadLine();
@@ -99,6 +112,7 @@ while (running)
                     if (upload.ToLower() == "yes") // om användaren skriver "yes" (oavsett små eller stora bokstäver)...
                     {
                         items.Add(new Item(name, description, active_username)); // ...läggs itemet till i item-listan
+                        DataStorage.SaveItems(items);
                         System.Console.WriteLine($"Your item ({name}) was uploaded!");
                         Console.ReadLine();
                         break; // går tillbaks till menyn
@@ -199,6 +213,7 @@ while (running)
                                     case "yes":
                                         Console.Clear(); // lägger till traden i trades (nedan)
                                         trades.Add(new Trade(yourItems[input2].Name, othersItems[input].Name, active_username, othersItems[input].Owner, Tradestatus.Pending));
+                                        DataStorage.SaveTrades(trades);
                                         System.Console.WriteLine($"Trade request was sent to {othersItems[input].Owner}");
                                         Console.ReadLine();
                                         break; // bryter loopen eftersom man är klar
@@ -295,6 +310,8 @@ while (running)
                                                         t.Status = Tradestatus.Approved;
                                                     }
                                                 }
+                                                DataStorage.SaveItems(items);
+                                                DataStorage.SaveTrades(trades);
                                                 Console.Clear();
                                                 System.Console.WriteLine("Trade completed!");
                                                 Console.ReadLine();
@@ -310,6 +327,7 @@ while (running)
                                                         t.Status = Tradestatus.Denied;
                                                     }
                                                 }
+                                                DataStorage.SaveTrades(trades);
                                                 Console.ReadLine();
                                                 break;
                                         }
@@ -324,7 +342,7 @@ while (running)
                         }
                         break;
 
-                    case "2":
+                    case "2": // visar trades man har skickat till andra som är pending
                         Console.Clear();
                         foreach (Trade trade in trades)
                         {
@@ -336,7 +354,7 @@ while (running)
                         Console.ReadLine();
                         break;
 
-                    case "3":
+                    case "3": // visar approved trades
                         Console.Clear();
                         foreach (Trade trade in trades)
                         {
@@ -352,7 +370,7 @@ while (running)
                         Console.ReadLine();
                         break;
 
-                    case "4":
+                    case "4": // visar denied trades
                         Console.Clear();
                         foreach (Trade trade in trades)
                         {
